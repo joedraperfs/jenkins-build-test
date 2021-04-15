@@ -1,0 +1,55 @@
+def REGION
+def IAM_LAMBDA_ROLE
+def DEPLOYMENT_BUCKET
+def choices
+
+node {
+  REGION = sh(script: "curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region", returnStdout: true).trim()
+
+  if( REGION.equals('us-west-2') ) {
+    choices = "qa0\nqa1\nqa2\nqa3\nqa4"
+    IAM_LAMBDA_ROLE = "arn:aws:iam::651958565740:role/lambda-qa"
+    DEPLOYMENT_BUCKET = "qa-jenkins-release"
+  } else {
+    choices = "prod\nstaging"
+    IAM_LAMBDA_ROLE = "arn:aws:iam::651958565740:role/lambda_api"
+    DEPLOYMENT_BUCKET = "jenkins-release"
+  }
+}
+
+pipeline {
+  agent any
+
+  options {
+    buildDiscarder logRotator(numToKeepStr: '5')
+    ansiColor('xterm')
+    disableConcurrentBuilds()
+  }
+
+  parameters {
+    choice(
+      name: 'SYSTEM_ID',
+      choices: "${choices}",
+      description: 'The target deploy environment (profile) to deploy to.')
+  }
+
+  tools {nodejs "Node.js_14.x"}
+
+  stages {
+    stage('Create') {
+      steps {
+        script {
+          echo "REGION: ${REGION}"
+          echo "SYSTEM_ID: ${SYSTEM_ID}"
+          echo "IAM_LAMBDA_ROLE: ${IAM_LAMBDA_ROLE}"
+          echo "DEPLOYMENT_BUCKET: ${DEPLOYMENT_BUCKET}"
+          sh 'node --version'
+          sh 'serverless -v'
+          sh './test.sh'
+          //sh 'npm install'
+          //sh 'serverless deploy -v'
+        }
+      }
+    }
+  }
+}
