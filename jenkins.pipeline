@@ -1,12 +1,12 @@
-def REGION
+def region
 def iamLambdaRole
 def deploymentBucket
 def choices
 
 node {
-  REGION = sh(script: "curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region", returnStdout: true).trim()
+  region = sh(script: "curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region", returnStdout: true).trim()
 
-  if( REGION.equals('us-west-2') ) {
+  if( region.equals('us-west-2') ) {
     choices = "qa0\nqa1\nqa2\nqa3\nqa4"
     iamLambdaRole = "arn:aws:iam::651958565740:role/lambda-qa"
     deploymentBucket = "qa-jenkins-release"
@@ -27,6 +27,7 @@ pipeline {
   }
 
   environment {
+    REGION = "${region}"
     IAM_LAMBDA_ROLE = "${iamLambdaRole}"
     DEPLOYMENT_BUCKET = "${deploymentBucket}"
   }
@@ -34,7 +35,7 @@ pipeline {
   parameters {
     choice(
       name: 'SYSTEM_ID',
-      choices: '${choices}',
+      choices: "${choices}",
       description: 'The target deploy environment (profile) to deploy to.')
   }
 
