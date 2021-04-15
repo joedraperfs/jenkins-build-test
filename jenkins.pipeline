@@ -20,21 +20,21 @@ node {
 pipeline {
   agent any
 
-  environment {
-    IAM_LAMBDA_ROLE = "${iamLambdaRole}"
-    DEPLOYMENT_BUCKET = "${deploymentBucket}"
-  }
-
   options {
     buildDiscarder logRotator(numToKeepStr: '5')
     ansiColor('xterm')
     disableConcurrentBuilds()
   }
 
+  environment {
+    IAM_LAMBDA_ROLE = "${iamLambdaRole}"
+    DEPLOYMENT_BUCKET = "${deploymentBucket}"
+  }
+
   parameters {
     choice(
       name: 'SYSTEM_ID',
-      choices: "${choices}",
+      choices: '${choices}',
       description: 'The target deploy environment (profile) to deploy to.')
   }
 
