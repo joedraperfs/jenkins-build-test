@@ -21,8 +21,8 @@ pipeline {
   agent any
 
   environment {
-    IAM_LAMBDA_ROLE = iamLambdaRole
-    DEPLOYMENT_BUCKET = deploymentBucket
+    IAM_LAMBDA_ROLE = "${iamLambdaRole}"
+    DEPLOYMENT_BUCKET = "${deploymentBucket}"
   }
 
   options {
