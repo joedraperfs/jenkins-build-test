@@ -1,6 +1,6 @@
 def REGION
-def IAM_LAMBDA_ROLE
-def DEPLOYMENT_BUCKET
+def iamLambdaRole
+def deploymentBucket
 def choices
 
 node {
@@ -8,17 +8,22 @@ node {
 
   if( REGION.equals('us-west-2') ) {
     choices = "qa0\nqa1\nqa2\nqa3\nqa4"
-    IAM_LAMBDA_ROLE = "arn:aws:iam::651958565740:role/lambda-qa"
-    DEPLOYMENT_BUCKET = "qa-jenkins-release"
+    iamLambdaRole = "arn:aws:iam::651958565740:role/lambda-qa"
+    deploymentBucket = "qa-jenkins-release"
   } else {
     choices = "prod\nstaging"
-    IAM_LAMBDA_ROLE = "arn:aws:iam::651958565740:role/lambda_api"
-    DEPLOYMENT_BUCKET = "jenkins-release"
+    iamLambdaRole = "arn:aws:iam::651958565740:role/lambda_api"
+    deploymentBucket = "jenkins-release"
   }
 }
 
 pipeline {
   agent any
+
+  environment {
+    IAM_LAMBDA_ROLE = iamLambdaRole
+    DEPLOYMENT_BUCKET = deploymentBucket
+  }
 
   options {
     buildDiscarder logRotator(numToKeepStr: '5')
