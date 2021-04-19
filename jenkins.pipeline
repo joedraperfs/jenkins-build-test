@@ -49,6 +49,7 @@ pipeline {
           echo "SYSTEM_ID: ${SYSTEM_ID}"
           echo "IAM_LAMBDA_ROLE: ${IAM_LAMBDA_ROLE}"
           echo "DEPLOYMENT_BUCKET: ${DEPLOYMENT_BUCKET}"
+          sh 'which node'
           sh 'node --version'
           sh 'serverless -v'
           sh './test.sh'
