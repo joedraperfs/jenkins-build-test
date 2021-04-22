@@ -51,11 +51,7 @@ pipeline {
   stages {
     stage('serverless deploy') {
       steps {
-        git {
-          url: "https://github.com/joedraperfs/jenkins-build-test.git",
-          branch: "${params.BRANCH}",
-          credentialsId: "jdraperfs"
-        }
+        git url: "https://github.com/joedraperfs/jenkins-build-test.git", branch: "${params.BRANCH}", credentialsId: "jdraperfs"
         script {
           currentBuild.displayName = "#${BUILD_NUMBER} ${BRANCH_NAME} to ${SYSTEM_ID}"
           echo "REGION: ${REGION}"
