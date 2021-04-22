@@ -33,15 +33,17 @@ pipeline {
   }
 
   parameters {
-    string(
+    gitParameter(
         name: "BRANCH_NAME",
         defaultValue: "master",
-        description: "The branch to build and deploy"
+        description: "The branch to build and deploy",
+        type: "PT_BRANCH"
     )
     choice(
       name: 'SYSTEM_ID',
       choices: "${choices}",
-      description: 'The target deploy environment (profile) to deploy to.')
+      description: 'The target deploy environment (profile) to deploy to.'
+    )
   }
 
   tools {nodejs "Node.js_14.x"}
