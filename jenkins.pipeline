@@ -42,9 +42,10 @@ pipeline {
   tools {nodejs "Node.js_14.x"}
 
   stages {
-    stage('Create') {
+    stage('serverless deploy') {
       steps {
         script {
+          currentBuild.displayName = "#${BUILD_NUMBER} ${BRANCH_NAME} to ${SYSTEM_ID}"
           echo "REGION: ${REGION}"
           echo "SYSTEM_ID: ${SYSTEM_ID}"
           echo "IAM_LAMBDA_ROLE: ${IAM_LAMBDA_ROLE}"
