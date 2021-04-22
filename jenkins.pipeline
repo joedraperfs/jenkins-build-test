@@ -33,6 +33,11 @@ pipeline {
   }
 
   parameters {
+    string(
+        name: "BRANCH_NAME",
+        defaultValue: "master",
+        description: "The branch to build and deploy"
+    )
     choice(
       name: 'SYSTEM_ID',
       choices: "${choices}",
