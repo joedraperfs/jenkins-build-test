@@ -1,0 +1,71 @@
+def region
+def iamLambdaRole
+def deploymentBucket
+def choices
+
+node {
+  region = sh(script: "curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region", returnStdout: true).trim()
+
+  if( region.equals('us-west-2') ) {
+    choices = "qa0\nqa1\nqa2\nqa3\nqa4"
+    iamLambdaRole = "arn:aws:iam::651958565740:role/lambda-qa"
+    deploymentBucket = "qa-jenkins-release"
+  } else {
+    choices = "prod\nstaging"
+    iamLambdaRole = "arn:aws:iam::651958565740:role/lambda_api"
+    deploymentBucket = "jenkins-release"
+  }
+}
+
+pipeline {
+  agent any
+
+  options {
+    buildDiscarder logRotator(numToKeepStr: '5')
+    ansiColor('xterm')
+    disableConcurrentBuilds()
+  }
+
+  environment {
+    REGION = "${region}"
+    IAM_LAMBDA_ROLE = "${iamLambdaRole}"
+    DEPLOYMENT_BUCKET = "${deploymentBucket}"
+  }
+
+  parameters {
+    gitParameter(
+        name: "BRANCH",
+        defaultValue: "master",
+        description: "The branch to build and deploy",
+        type: "PT_BRANCH"
+    )
+    choice(
+      name: 'SYSTEM_ID',
+      choices: "${choices}",
+      description: 'The target deploy environment (profile) to deploy to.'
+    )
+  }
+
+  tools {nodejs "Node.js_14.x"}
+
+  stages {
+    stage('serverless deploy') {
+      steps {
+        git url: "https://github.com/joedraperfs/jenkins-build-test.git", branch: "${params.BRANCH}", credentialsId: "jdraperfs"
+        script {
+          currentBuild.displayName = "#${BUILD_NUMBER} ${BRANCH_NAME} to ${SYSTEM_ID}"
+          echo "REGION: ${REGION}"
+          echo "SYSTEM_ID: ${SYSTEM_ID}"
+          echo "IAM_LAMBDA_ROLE: ${IAM_LAMBDA_ROLE}"
+          echo "DEPLOYMENT_BUCKET: ${DEPLOYMENT_BUCKET}"
+          sh 'which node'
+          sh 'node --version'
+          sh 'serverless -v'
+          sh './test.sh'
+          //sh 'npm install'
+          //sh 'serverless deploy -v'
+        }
+      }
+    }
+  }
+}
