@@ -70,7 +70,7 @@ pipeline {
     stage('serverless deploy') {
       steps {
         script {
-          currentBuild.displayName = "#${BUILD_NUMBER} ${BRANCH_NAME} to ${SYSTEM_ID}"
+          currentBuild.displayName = "#${BUILD_NUMBER} ${BRANCH} to ${SYSTEM_ID}"
           echo "REGION: ${REGION}"
           echo "SYSTEM_ID: ${SYSTEM_ID}"
           echo "IAM_LAMBDA_ROLE: ${IAM_LAMBDA_ROLE}"
