@@ -63,7 +63,7 @@ pipeline {
         script {
           echo "Testing emailext:  $JOB_NAME"
         }
-        emailext subject: 'Test emailext from $JOB_NAME' to: 'jdraper@fastspring.com' body: 'Test message content.'
+        emailext subject: "Test emailext from $JOB_NAME" to: "jdraper@fastspring.com" body: "Test message content."
       }
     }
 
