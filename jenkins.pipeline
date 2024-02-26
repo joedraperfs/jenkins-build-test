@@ -51,7 +51,10 @@ pipeline {
   stages {
     stage('Get branch from Git') {
       steps {
-        git url: "https://github.com/joedraperfs/jenkins-build-test.git", branch: "${params.BRANCH}", credentialsId: "jdraperfs"
+        script {
+          echo "Skipping this step in Job: $JOB_NAME"
+        }
+        //git url: "https://github.com/joedraperfs/jenkins-build-test.git", branch: "${params.BRANCH}", credentialsId: "jdraperfs"
       }
     }
 
