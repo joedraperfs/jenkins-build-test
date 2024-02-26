@@ -58,7 +58,8 @@ pipeline {
     stage('test emailext') {
       steps {
         script {
-          emailext subject: 'Test emailext from $JOB_NAME' to: 'jdraper@fastspring.com' body: 'Test message content.'
+          echo "Testing emailext:  $JOB_NAME"
+          //emailext subject: 'Test emailext from $JOB_NAME' to: 'jdraper@fastspring.com' body: 'Test message content.'
         }
       }
     }
