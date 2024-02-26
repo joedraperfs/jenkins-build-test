@@ -49,11 +49,28 @@ pipeline {
   tools {nodejs "Node.js_14.x"}
 
   stages {
+    stage('Get branch from Git') {
+      steps {
+        script {
+          echo "Skipping this step in Job: $JOB_NAME"
+        }
+        //git url: "https://github.com/joedraperfs/jenkins-build-test.git", branch: "${params.BRANCH}", credentialsId: "jdraperfs"
+      }
+    }
+
+    stage('test emailext') {
+      steps {
+        script {
+          echo "Testing emailext:  $JOB_NAME"
+        }
+        emailext subject: "Test emailext from $JOB_NAME", to: "jdraper@fastspring.com", body: "Test message content."
+      }
+    }
+
     stage('serverless deploy') {
       steps {
-        git url: "https://github.com/joedraperfs/jenkins-build-test.git", branch: "${params.BRANCH}", credentialsId: "jdraperfs"
         script {
-          currentBuild.displayName = "#${BUILD_NUMBER} ${BRANCH_NAME} to ${SYSTEM_ID}"
+          currentBuild.displayName = "#${BUILD_NUMBER} ${BRANCH} to ${SYSTEM_ID}"
           echo "REGION: ${REGION}"
           echo "SYSTEM_ID: ${SYSTEM_ID}"
           echo "IAM_LAMBDA_ROLE: ${IAM_LAMBDA_ROLE}"
